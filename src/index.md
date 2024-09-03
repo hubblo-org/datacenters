@@ -1,5 +1,4 @@
 ---
-toc: false
 ---
 
 <style>
@@ -44,40 +43,125 @@ toc: false
 </style>
 
 <div class="hero">
-  <h1>Impacts SAAS &amp; IAAS</h1>
+  <h1>Datacenters dashboard</h1>
 </div>
+
+<h2>IDEAS</h2>
+<ul>
+    <li>compare current trajectories we know regarding ghg emissions targets of gafams and network operators, with sbti targets, and other targets ?</li>
+    <li>graph representing the connections between norms and laws, relations beign "based on", "inspired from", "completes", ... with a color code for each norm that says if it comes from the industry, from the public , or a mixed origin</li>
+    <li></li>
+</ul>
+
+<h2>Timeline of Datacenters regulations effects and obligations</h2>
+
+<div class="card grid grid-cols-2">
 
 ```js
-console.log("Loading data")
-const storage_impact_data = FileAttachment("data/storage_impact.csv").csv({typed: true})
+const height = view(
+  Inputs.range([100, 500], {
+    label: "Height",
+    step: 10,
+    value: 200,
+  }),
+);
+const tickHeight = view(
+  Inputs.range([10, 50], {
+    label: "Tick Height",
+    step: 5,
+    value: 25,
+  }),
+);
+const fontSizeInt = view(
+  Inputs.range([8, 24], {
+    label: "Font Size",
+    step: 2,
+    value: 16,
+  }),
+);
+const lineLength = view(
+  Inputs.range([10, 30], {
+    label: "Maximum Character Length of Each Line",
+    step: 1,
+    value: 15,
+  }),
+);
+const sideMargins = view(
+  Inputs.range([10, 120], {
+    label: "Left and Right Margins",
+    step: 5,
+    value: 70,
+  }),
+);
 
-const units = {"gwp": "kgCO2eq", "adpe": "kgSbeq", "adpf": "MJ", "ap": "", "ctue": "ctue", "ir": "kBqU235eq", "pm": "Disease occurence", "pocp": "kgNMVOCeq", "mips": "kg", "wp": "kg", "pe": "MJ", "fe": "MJ"}
+const data = await FileAttachment("regulations_deadlines.csv")
+  .csv({ typed: true })
+  .then((data) => {
+    return data;
+  });
+console.log(data);
 
-const impact_criteria = view(Inputs.select(["gwp", "adpe", "adpf", "ap", "ctue", "ir", "pm", "pocp", "mips", "wp", "pe", "fe"], {unique: true, value: "1", label: "Impact criteria"}));
-const size_gb = view(Inputs.select([1,10,100], {label: "Size in GB"}))
-const service_type = view(Inputs.select(["Storage (1 year)"], {"label": "Service Type'"}))
-const x_group = view(Inputs.select(["tier", "dc_location"], {value: "tier", label: "X grouping by"}))
-const fx = view(Inputs.select(["dc_location", "tier"], {value: "dc_location", label: "fx grouping"}))
+function wrapText(inputString, segmentLength) {
+  const words = inputString.split(" ");
+  let result = "";
+  let currentLineLength = 0;
+  let numberOfLines = 0;
+
+  for (const word of words) {
+    if (currentLineLength + word.length + 1 <= segmentLength) {
+      // Add the word and a space to the current line
+      result += (result === "" ? "" : " ") + word;
+      currentLineLength += word.length + 1;
+    } else {
+      // Start a new line with the word
+      result += "\n" + word;
+      currentLineLength = word.length;
+      numberOfLines++;
+    }
+  }
+
+  // Count the last line
+  if (result !== "") {
+    numberOfLines++;
+  }
+
+  return {
+    text: result,
+    numberOfLines: numberOfLines,
+  };
+}
 ```
 
-<h3>Impact of ${service_type}, size in GB: ${size_gb}, ${impact_criteria}, unit: ${units[impact_criteria]}</h3>
-<div class="grid grid-cols-1">
-  <div class="card">${
-    resize((width) => Plot.plot({
-      x: {axis: null},
-      y: {tickFormat: "s", grid: true},
-      color: {scheme: "spectral", legend: true},
-      marks: [
-        Plot.barY(storage_impact_data, {
-          x: x_group,
-          y: impact_criteria,
-          fill: x_group,
-          fx: fx,
-          filter: (d) => d.service_type === service_type && d.size_gb === size_gb,
-          sort: {x: null, color: null, fx: {value: "-y", reduce: "sum"}}
-        }),
-        Plot.ruleY([0])
-      ]
-    }))}
 </div>
+
+<div class="grid grid-cols-1">
+  ${ resize((width) => Plot.plot({
+    style: {
+      fontSize: fontSizeInt + "px"
+    },
+    width,
+    height,
+    marginLeft: sideMargins,
+    marginRight: sideMargins,
+    x: { axis: null },
+    y: { axis: null, domain: [-height / 2, height / 2] },
+    marks: [
+      Plot.ruleY([0]),
+      Plot.ruleX(data, {
+        x: "year",
+        y: (d, i) => (i % 2 === 0 ? tickHeight : -tickHeight)
+      }),
+      Plot.dot(data, { x: "year", fill: "#fff", stroke: "#000" }),
+      Plot.text(data, {
+        x: "year",
+        y: (d, i) => (i % 2 === 0 ? -fontSizeInt / 2 - 4 : fontSizeInt / 2 + 4),
+        text: (d) => d.year.toString()
+      }),
+      Plot.text(data, {
+        x: "year",
+        y: (d, i) => d.composition.toString(),
+        text: "composition"
+      })
+    ]
+  }))}
 </div>

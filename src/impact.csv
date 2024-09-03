@@ -1,5 +1,0 @@
-dc_location,service_type,service_use_duration,size_gb,tier,adpe,adpf,ap,ctue,gwp,ir,pm,pocp,mips,wp,pe,fe
-France,Storage (1 year),"0,5",1,devices,2.07e-08,0.0108,2.17e-06,0.00557,0.000358,0.00119,1.84e-11,9.4e-07,0.00142,0.000363,0.00875,0.00165
-France,Storage (1 year),"0,5",1,network,1.09e-06,3.21,0.000111,0.111,0.0238,0.444,3.82e-09,5.6e-05,0.0909,0.0,3.31,0.851
-France,Storage (1 year),"0,5",1,datacenter,1.22e-06,4.94,0.000487,1.28,0.0874,0.583,6.72e-09,0.000201,0.301,0.0494,5.41,1.21
-France,Storage (1 year),"0,5",1,total,2.33e-06,8.16,0.0006,1.4,0.112,1.03,1.06e-08,0.000258,0.394,0.0498,8.73,2.06
