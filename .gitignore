@@ -4,6 +4,7 @@ node_modules/
 yarn-error.log
 *credentials.json
 *token.json
-consommationsdc/*.csv
+consommationsdc**.csv
 consommationsdc/*.zip
 consommationsdc/*cookies**
+*.zip
