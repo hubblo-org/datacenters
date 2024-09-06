@@ -1,0 +1,19 @@
+id
+name
+address
+city
+postal_code
+region
+country
+country_code
+cadastral_id
+power installed at last update
+square ft meters global
+square ft meters it / floor
+date of building manufacturing
+date of land buying act
+main_source
+secondary_source
+date of last update
+comment_main_source
+comment_secondary_source
